@@ -1,0 +1,257 @@
+<div class="wrapper">
+  <div class="main-panel">
+    <div class="main-content" style="padding-top: 1rem; height: 200px">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card" style="margin-top: 0">
+              <div
+                class="card-header"
+                style="height: 175px; margin-top: 0px; margin-bottom: 0px"
+              >
+                <div class="container-fluid">
+                  <div class="navbar-wrapper">
+                    <a
+                      class="navbar-brand"
+                      style="width: 200px"
+                      href="javascript:void(0)"
+                    >
+                      <img src="../assets/img/creditsafe.svg" />
+                    </a>
+                  </div>
+
+                  <div
+                    class="navbar-collapse justify-content-end mt-1"
+                    id="navigation"
+                  >
+                    <div class="input-group no-border" style="margin: auto">
+                      <input
+                        type="text"
+                        id="inputsafenumber"
+                        [(ngModel)]="inputSafeNumber"
+                        value=""
+                        class="form-control text-center"
+                        placeholder="Please enter safenumber of company to search similar companies..."
+                      />
+                      <button
+                        mat-raised-button
+                        (click)="onSearch()"
+                        type="submit"
+                        class="btn btn-white btn-round btn-just-icon"
+                      >
+                        <i class="material-icons">search</i>
+                        <div class="ripple-container"></div>
+                      </button>
+                      <button
+                        mat-raised-button
+                        type="submit"
+                        class="btn btn-white btn-round btn-just-icon"
+                        (click)="openAdvMatchFilterPopup()"
+                      >
+                        <img src="../assets/img/funnel-fill.svg" />
+                        <div class="ripple-container"></div>
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      class="form-inline param-div text-center"
+                      style="margin: auto; cursor: pointer"
+                      (click)="openAdvMatchFilterPopup()"
+                      title="No additional filters selected. If you want to select
+                      click here!!!"
+                    >
+                      <ng-container *ngFor="let param of parameters">
+                        <span
+                          *ngIf="param.checked"
+                          style="font-weight: 600"
+                          class="mr-3"
+                          >{{ param.key }}</span
+                        >
+                      </ng-container>
+                      <i style="opacity: 0.5" *ngIf="isNoParamFilterSelected()"
+                        >No additional filters selected. If you want to select
+                        click here!!!</i
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main-panel">
+    <div class="main-content" style="padding-top: 1rem">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header card-header-danger">
+                <h4 class="card-title" style="color: white; font-weight: 700">
+                  Similar Companies
+                </h4>
+                <p class="card-category" style="color: white">
+                  These are the similar companies as per your search.
+                </p>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead class="text-primary">
+                      <th>Name</th>
+                      <th class="text-center">SafeNumber</th>
+                      <th class="text-center">Activity Code</th>
+                      <th class="text-center">Credit Score</th>
+                      <th class="text-center">Location</th>
+                      <th class="text-center">Credit worthy</th>
+                      <th class="text-center">No of employees</th>
+                      <th class="text-center">Turnover</th>
+                      <th></th>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let company of similarCompaniesInfo">
+                        <td>
+                          <a
+                            target="_blank"
+                            href="{{
+                              'https://app.creditsafe.com/companies/' +
+                                company.cs_company_id
+                            }}"
+                            >{{ company.name }}</a
+                          >
+                        </td>
+                        <td class="text-center">
+                          {{ company.cs_company_id }}
+                        </td>
+                        <td class="text-center">
+                          {{ company.activity_code }}
+                        </td>
+                        <td class="text-center">
+                          {{ company.credit_score }}
+                        </td>
+                        <td class="text-center">
+                          {{ company.city }}
+                        </td>
+                        <td class="text-center">
+                          {{ company.creditworthy }}
+                        </td>
+                        <td class="text-center">
+                          {{ company.employees }}
+                        </td>
+                        <td class="text-center">
+                          {{ company.turnover == 0 ? "-" : company.turnover }}
+                        </td>
+                        <td>
+                          <button
+                            mat-raised-button
+                            type="submit"
+                            class="btn btn-white btn-round btn-just-icon"
+                            (click)="compareWithActualCompany(company)"
+                            title="Compare with searched company."
+                          >
+                            <img src="../assets/img/check2-circle.svg" />
+                            <div class="ripple-container"></div>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #filterSelect let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Matching Parameters</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <ul style="width: 64%; list-style: none; overflow: hidden; color: black">
+      <li *ngFor="let parameter of parameters" class="ml-5">
+        <label style="color: black">
+          <input type="checkbox" [(ngModel)]="parameter.checked" />
+          {{ parameter.key }}
+        </label>
+      </li>
+    </ul>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')"
+    >
+      Close
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #comparision let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Comparision</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" style="height: 320px">
+    <ul style="list-style: none; overflow: hidden; color: black; padding: 0">
+      <li
+        *ngFor="let parameter of comparisonParams"
+        class="ml-5"
+        style="float: left"
+      >
+        <label style="color: black">
+          <input
+            type="radio"
+            name="comparision-radio"
+            (change)="selectedCompParam = parameter; frameChartObject()"
+            [checked]="selectedCompParam === parameter"
+          />
+          {{ parameter }}
+        </label>
+      </li>
+    </ul>
+    <div style="display: block" *ngIf="compParamChangedStatus === 2">
+      <canvas
+        baseChart
+        [data]="pieChartData"
+        [labels]="pieChartLabels"
+        [chartType]="pieChartType"
+        [options]="pieChartOptions"
+        [plugins]="pieChartPlugins"
+        [legend]="pieChartLegend"
+      >
+      </canvas>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="modal.close('Save click')"
+    >
+      Close
+    </button>
+  </div>
+</ng-template>

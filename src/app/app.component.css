@@ -1,0 +1,29 @@
+#inputsafenumber:focus,
+#cddefSelect:focus {
+  border: none !important;
+  box-shadow: none;
+}
+label {
+  display: block;
+  padding-left: 15px;
+  text-indent: -15px;
+}
+input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  padding: 0;
+  margin: 0;
+  vertical-align: bottom;
+  position: relative;
+  top: -1px;
+  *overflow: hidden;
+}
+
+.param-div {
+  margin: auto;
+  height: 50px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border: 1px solid black;
+  border-radius: 22px;
+}
