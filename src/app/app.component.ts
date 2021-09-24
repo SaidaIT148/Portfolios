@@ -63,10 +63,17 @@ export class AppComponent {
     monkeyPatchChartJsLegend();
   }
   onSearch() {
-    this.similarCompaniesInfo = this._appService.getSimilarCompanies(
-      this.inputSafeNumber,
-      this.parameters
+    this.currentCompany = this._appService.getCompanyBySafeNumber(
+      this.inputSafeNumber
     );
+    if (this.currentCompany) {
+      this.similarCompaniesInfo = this._appService.getSimilarCompanies(
+        this.inputSafeNumber,
+        this.parameters
+      );
+    } else {
+      this.similarCompaniesInfo = [];
+    }
   }
 
   frameChartObject() {

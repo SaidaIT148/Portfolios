@@ -7,7 +7,8 @@
             <div class="card" style="margin-top: 0">
               <div
                 class="card-header"
-                style="height: 175px; margin-top: 0px; margin-bottom: 0px"
+                [style.height.px]="currentCompany ? '210' : '175'"
+                style="margin-top: 0px; margin-bottom: 0px"
               >
                 <div class="container-fluid">
                   <div class="navbar-wrapper">
@@ -24,36 +25,81 @@
                     class="navbar-collapse justify-content-end mt-1"
                     id="navigation"
                   >
-                    <div class="input-group no-border" style="margin: auto">
+                    <div
+                      class="input-group no-border"
+                      style="margin: auto; width: 35%"
+                    >
                       <input
                         type="text"
                         id="inputsafenumber"
                         [(ngModel)]="inputSafeNumber"
-                        value=""
+                        (keydown.enter)="onSearch()"
                         class="form-control text-center"
+                        style="font-size: 32px"
                         placeholder="Please enter safenumber of company to search similar companies..."
                       />
                       <button
                         mat-raised-button
                         (click)="onSearch()"
                         type="submit"
-                        class="btn btn-white btn-round btn-just-icon"
+                        class="
+                          btn btn-white btn-round btn-just-icon
+                          search-button
+                        "
                       >
                         <i class="material-icons">search</i>
                         <div class="ripple-container"></div>
                       </button>
-                      <button
-                        mat-raised-button
-                        type="submit"
-                        class="btn btn-white btn-round btn-just-icon"
-                        (click)="openAdvMatchFilterPopup()"
-                      >
-                        <img src="../assets/img/funnel-fill.svg" />
-                        <div class="ripple-container"></div>
-                      </button>
                     </div>
                   </div>
-                  <div>
+                  <div style="margin-top: 1rem" *ngIf="currentCompany">
+                    <div class="row current_company_div">
+                      <div class="col-md form-inline">
+                        <b class="mr-1">Name: </b> {{ currentCompany.name }}
+                      </div>
+                      <div class="col-md form-inline">
+                        <b class="mr-1">Safenumber: </b>
+                        {{ currentCompany.cs_company_id }}
+                      </div>
+                      <div class="col-md form-inline">
+                        <b class="mr-1">Activity Code: </b>
+                        {{ currentCompany.activity_code }}
+                      </div>
+                      <div class="col-md form-inline">
+                        <b class="mr-1">Credit Score: </b>
+                        {{ currentCompany.credit_score }}
+                      </div>
+                      <div class="col-md form-inline">
+                        <b class="mr-1">City: </b> {{ currentCompany.city }}
+                      </div>
+                      <div class="col-md form-inline">
+                        <b class="mr-1">Credit worty:</b>
+                        <img
+                          style="width: 20px; margin-left: 1rem"
+                          *ngIf="currentCompany.creditworthy === 'Y'"
+                          src="../assets/img/check-solid.svg"
+                        />
+                        <img
+                          style="width: 20px; margin-left: 1rem"
+                          *ngIf="currentCompany.creditworthy !== 'Y'"
+                          src="../assets/img/times-solid.svg"
+                        />
+                      </div>
+                      <div class="col-md form-inline">
+                        <b class="mr-1">No of employees: </b>
+                        {{ currentCompany.employees }}
+                      </div>
+                      <div class="col-md form-inline">
+                        <b>Turnover: </b>
+                        {{
+                          currentCompany.turnover == 0
+                            ? "-"
+                            : currentCompany.turnover
+                        }}
+                      </div>
+                    </div>
+                  </div>
+                  <div style="margin-top: 1rem">
                     <div
                       class="form-inline param-div text-center"
                       style="margin: auto; cursor: pointer"
@@ -88,7 +134,10 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <div class="card">
+            <div
+              class="card"
+              [style.margin-top.px]="currentCompany ? '42' : '10'"
+            >
               <div class="card-header card-header-danger">
                 <h4 class="card-title" style="color: white; font-weight: 700">
                   Similar Companies
@@ -99,66 +148,79 @@
               </div>
               <div class="card-body">
                 <div class="table-responsive">
-                  <table class="table table-striped">
-                    <thead class="text-primary">
-                      <th>Name</th>
-                      <th class="text-center">SafeNumber</th>
-                      <th class="text-center">Activity Code</th>
-                      <th class="text-center">Credit Score</th>
-                      <th class="text-center">Location</th>
-                      <th class="text-center">Credit worthy</th>
-                      <th class="text-center">No of employees</th>
-                      <th class="text-center">Turnover</th>
-                      <th></th>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let company of similarCompaniesInfo">
-                        <td>
-                          <a
-                            target="_blank"
-                            href="{{
-                              'https://app.creditsafe.com/companies/' +
-                                company.cs_company_id
-                            }}"
-                            >{{ company.name }}</a
-                          >
-                        </td>
-                        <td class="text-center">
-                          {{ company.cs_company_id }}
-                        </td>
-                        <td class="text-center">
-                          {{ company.activity_code }}
-                        </td>
-                        <td class="text-center">
-                          {{ company.credit_score }}
-                        </td>
-                        <td class="text-center">
-                          {{ company.city }}
-                        </td>
-                        <td class="text-center">
-                          {{ company.creditworthy }}
-                        </td>
-                        <td class="text-center">
-                          {{ company.employees }}
-                        </td>
-                        <td class="text-center">
-                          {{ company.turnover == 0 ? "-" : company.turnover }}
-                        </td>
-                        <td>
-                          <button
-                            mat-raised-button
-                            type="submit"
-                            class="btn btn-white btn-round btn-just-icon"
-                            (click)="compareWithActualCompany(company)"
-                            title="Compare with searched company."
-                          >
-                            <img src="../assets/img/check2-circle.svg" />
-                            <div class="ripple-container"></div>
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                  <ng-container *ngIf="similarCompaniesInfo?.length > 0">
+                    <table class="table table-striped">
+                      <thead class="text-primary">
+                        <th>Name</th>
+                        <th class="text-center">SafeNumber</th>
+                        <th class="text-center">Activity Code</th>
+                        <th class="text-center">Credit Score</th>
+                        <th class="text-center">Location</th>
+                        <th class="text-center">Credit worthy</th>
+                        <th class="text-center">No of employees</th>
+                        <th class="text-center">Turnover</th>
+                        <th></th>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let company of similarCompaniesInfo">
+                          <td>
+                            <a
+                              target="_blank"
+                              href="{{
+                                'https://app.creditsafe.com/companies/' +
+                                  company.cs_company_id
+                              }}"
+                              >{{ company.name }}</a
+                            >
+                          </td>
+                          <td class="text-center">
+                            {{ company.cs_company_id }}
+                          </td>
+                          <td class="text-center">
+                            {{ company.activity_code }}
+                          </td>
+                          <td class="text-center">
+                            {{ company.credit_score }}
+                          </td>
+                          <td class="text-center">
+                            {{ company.city }}
+                          </td>
+                          <td class="text-center">
+                            <img
+                              style="width: 20px; margin-left: 1rem"
+                              *ngIf="company.creditworthy === 'Y'"
+                              src="../assets/img/check-solid.svg"
+                            />
+                            <img
+                              style="width: 20px; margin-left: 1rem"
+                              *ngIf="company.creditworthy !== 'Y'"
+                              src="../assets/img/times-solid.svg"
+                            />
+                          </td>
+                          <td class="text-center">
+                            {{ company.employees }}
+                          </td>
+                          <td class="text-center">
+                            {{ company.turnover == 0 ? "-" : company.turnover }}
+                          </td>
+                          <td>
+                            <button
+                              mat-raised-button
+                              type="submit"
+                              class="btn btn-white btn-round btn-just-icon"
+                              (click)="compareWithActualCompany(company)"
+                              title="Compare with searched company."
+                            >
+                              <img src="../assets/img/check2-circle.svg" />
+                              <div class="ripple-container"></div>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table> </ng-container
+                  ><ng-container *ngIf="similarCompaniesInfo?.length === 0">
+                    <div style="margin: auto">No companies found!!!</div>
+                  </ng-container>
                 </div>
               </div>
             </div>

@@ -8,6 +8,20 @@ label {
   padding-left: 15px;
   text-indent: -15px;
 }
+.current_company_div .col-md {
+  padding-left: 0;
+  padding-right: 0;
+}
+.search-button {
+  position: absolute;
+  margin-left: 93%;
+  background-color: transparent;
+  box-shadow: none;
+  margin-top: -1px;
+}
+.search-button i {
+  font-size: 32px;
+}
 input[type="checkbox"] {
   width: 17px;
   height: 17px;
